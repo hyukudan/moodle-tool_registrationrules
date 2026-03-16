@@ -75,6 +75,7 @@ $string['ruleinstancestable:nomorecaptchasmessage'] = 'Only one CAPTCHA type rul
 $string['ruleinstancestable:norulesaddedyet'] = 'No rules have been added yet, begin by adding a rule and/or CAPTCHA using the dropdown menus below.';
 $string['ruleinstancestable:notconfigured'] = 'Not configured';
 $string['ruleinstancestable:plugindisabled'] = 'Plugin disabled';
+$string['ruleinstancestable:maxpointsinfo'] = 'Registration is denied when total points reach this threshold';
 $string['ruleinstancestable:points'] = 'Points';
 $string['ruleinstancestable:points:decription'] = 'Number of points issued when registration is denied.';
 $string['ruleinstancestable:rulenotenabled'] = 'Rule not enabled';

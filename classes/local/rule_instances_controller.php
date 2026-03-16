@@ -580,6 +580,7 @@ class rule_instances_controller implements renderable, \templatable {
             )),
             'siterecaptchaenabled' => $this->site_captcha_enabled(),
             'pluginenabled' => get_config('tool_registrationrules', 'enable'),
+            'maxpoints' => get_config('tool_registrationrules', 'maxpoints'),
         ];
 
         foreach ($this->get_rule_instances() as $key => $ruleinstance) {

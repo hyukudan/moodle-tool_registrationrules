@@ -46,6 +46,7 @@ $string['ruleinstancestable:nomorecaptchasmessage'] = 'Solo se puede añadir un 
 $string['ruleinstancestable:norulesaddedyet'] = 'Aún no se han añadido reglas. Empieza añadiendo una regla y/o CAPTCHA usando los menús desplegables de abajo.';
 $string['ruleinstancestable:notconfigured'] = 'No configurado';
 $string['ruleinstancestable:plugindisabled'] = 'Plugin desactivado';
+$string['ruleinstancestable:maxpointsinfo'] = 'El registro se deniega cuando los puntos totales alcanzan este umbral';
 $string['ruleinstancestable:points'] = 'Puntos';
 $string['ruleinstancestable:points:decription'] = 'Número de puntos asignados cuando se deniega el registro.';
 $string['ruleinstancestable:rulenotenabled'] = 'Regla no activada';
