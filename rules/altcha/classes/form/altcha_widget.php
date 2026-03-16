@@ -16,6 +16,9 @@
 
 namespace registrationrule_altcha\form;
 
+global $CFG;
+require_once($CFG->libdir . '/form/text.php');
+
 use MoodleQuickForm_text;
 
 /**

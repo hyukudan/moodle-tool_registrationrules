@@ -75,7 +75,7 @@ class rule implements rule_interface, post_data_check, instance_configurable {
         $requireddatakeys = ['username', 'email'];
         $exists = count(array_diff_key(array_flip($requireddatakeys), $data)) === 0;
         if (!$exists) {
-            return null;
+            return $this->allow();
         }
 
         // Make a request to the API.

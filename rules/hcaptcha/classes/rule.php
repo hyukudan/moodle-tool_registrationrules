@@ -84,7 +84,7 @@ class rule implements rule_interface, extend_signup_form, plugin_configurable, p
         $hcaptchasitekey = get_config('registrationrule_hcaptcha', 'hcaptcha_sitekey');
         // Return early if the config has not been set.
         if (!$hcaptchasecret || !$hcaptchasitekey) {
-            return null;
+            return $this->allow();
         }
         $postparams = [
             'secret' => $hcaptchasecret,
