@@ -39,7 +39,25 @@ class rule_factory {
      * @return rule_interface Rule plugin class instance, configured where appropriate.
      */
     public static function create_instance_from_record(stdClass $dbrecord): rule_interface {
-        $ruleclass = 'registrationrule_' . $dbrecord->type . '\rule';
+        // SEC4: validate the rule type against the installed plugins before
+        // attempting to instantiate. Without this guard a row in the
+        // tool_registrationrules table with an unexpected `type` would either
+        // fatal-error on auto-load failure or, worse, instantiate any class
+        // matching the registrationrule_<x>\rule shape that happened to exist
+        // in the codebase. Restricting to subplugins of registrationrule keeps
+        // the dynamic instantiation contract honest.
+        $type = (string)($dbrecord->type ?? '');
+        if ($type === '' || !preg_match('/^[a-z][a-z0-9_]*$/', $type)) {
+            throw new coding_exception("Rule type '{$type}' is not a valid frankenstyle suffix");
+        }
+        $allowed = \core_plugin_manager::instance()->get_installed_plugins('registrationrule');
+        if (!array_key_exists($type, $allowed)) {
+            throw new coding_exception("Rule type '{$type}' is not an installed registrationrule subplugin");
+        }
+        $ruleclass = 'registrationrule_' . $type . '\rule';
+        if (!class_exists($ruleclass)) {
+            throw new coding_exception("Rule class {$ruleclass} not found");
+        }
 
         // Create a new instance of the rule plugin.
         $ruleinstance = new $ruleclass();
@@ -67,9 +85,13 @@ class rule_factory {
         // If the rule instance allows configuration then decode and validate config json.
         if ($ruleinstance instanceof instance_configurable) {
             // Decode raw json from DB record containing instance related config object.
-            $instanceconfig = json_decode($dbrecord->other);
+            // SEC4: include the offending rule id in the exception so a single
+            // bad row can be located without log spelunking.
+            $instanceconfig = json_decode($dbrecord->other ?? '');
             if ($instanceconfig === null) {
-                throw new coding_exception('Instance config JSON could not be decoded');
+                throw new coding_exception(
+                    "Instance config JSON for rule id {$dbrecord->id} (type {$dbrecord->type}) could not be decoded"
+                );
             }
             // Validate that the supplied instance config contains the fields defined by
             // get_instance_settings_fields().

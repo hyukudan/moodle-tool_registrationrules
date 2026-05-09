@@ -81,6 +81,9 @@ class altcha_widget extends MoodleQuickForm_text {
             'waitAlert' => get_string('altcha:string:waitalert', 'registrationrule_altcha'),
         ];
 
+        // Build the URL to the locally hosted altcha widget JS.
+        $jsurl = new \moodle_url('/admin/tool/registrationrules/rules/altcha/js/altcha.min.js');
+
         // Set the template context and render the HTML for use by the form renderer.
         $context = [
                 'element' => $this->export_for_template($OUTPUT),
@@ -88,6 +91,7 @@ class altcha_widget extends MoodleQuickForm_text {
                 'challengejson' => $this->challengejson,
                 'maxnumber' => $this->maxnumber,
                 'strings' => json_encode($strings),
+                'jsurl' => $jsurl->out(false),
         ];
         $renderer->_html .= $OUTPUT->render_from_template('registrationrule_altcha/altcha_widget', $context);
     }

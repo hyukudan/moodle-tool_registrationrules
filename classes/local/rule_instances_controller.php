@@ -271,11 +271,20 @@ class rule_instances_controller implements renderable, \templatable {
      * @return rule\rule_interface[]
      */
     public function get_rule_instances(): array {
+        // SEC4: a single corrupted DB row (bad type, bad JSON, missing class)
+        // used to throw and abort the whole rule engine. Now we isolate each
+        // record with its own try/catch and log+skip the bad ones; the rest of
+        // the rules keep working and the admin can still log in to fix the row.
         $instances = [];
         foreach ($this->get_rule_instance_records() as $record) {
-            // Create a new rule instance object and add it to the list of instances.
-            $ruleinstance = rule\rule_factory::create_instance_from_record($record);
-            $instances[$ruleinstance->get_id()] = $ruleinstance;
+            try {
+                $ruleinstance = rule\rule_factory::create_instance_from_record($record);
+                $instances[$ruleinstance->get_id()] = $ruleinstance;
+            } catch (\Throwable $e) {
+                debugging('tool_registrationrules: skipping rule instance id ' .
+                    ($record->id ?? '?') . ' (' . ($record->type ?? '?') . '): ' .
+                    $e->getMessage(), DEBUG_DEVELOPER);
+            }
         }
 
         return $instances;

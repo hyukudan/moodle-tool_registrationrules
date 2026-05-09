@@ -38,7 +38,7 @@
 }}
 {{< core_form/element-template }}
     {{$element}}
-        <script src="https://cdn.jsdelivr.net/npm/altcha/dist/altcha.min.js" async type="module"></script>
+        <script src="{{jsurl}}" async type="module"></script>
         <altcha-widget
             name="{{element.name}}"
             maxnumber="{{maxnumber}}"
