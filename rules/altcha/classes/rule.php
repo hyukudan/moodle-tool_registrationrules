@@ -166,16 +166,6 @@ class rule implements rule_interface, extend_signup_form, post_data_check, insta
     public function post_data_check(array $data): rule_check_result {
         global $SESSION;
 
-        // Rule is inapplicable when the challenge was never rendered (e.g. a signup
-        // flow that does not use the native form, such as the enrol_buynow trial).
-        // extend_signup_form() sets this session key; without it there is no captcha
-        // to verify, so treat it as allow rather than deny_with_fallback (which would
-        // flag every headless signup as blocked). Native signup still sets the key
-        // and enforces the captcha normally.
-        if (!isset($SESSION->registrationrule_altcha_key)) {
-            return $this->allow();
-        }
-
         // Decode base64 encoded JSON string from form data.
         $base64 = base64_decode($data['registrationrule_altcha'] ?? '', true);
         if ($base64 === false) {

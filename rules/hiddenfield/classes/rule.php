@@ -123,13 +123,6 @@ class rule implements rule_interface, post_data_check, extend_signup_form, exten
     public function post_data_check(array $data): rule_check_result {
         global $SESSION;
 
-        // Rule is inapplicable when the honeypot field was never rendered (e.g. a
-        // signup flow that does not use the native form, such as enrol_buynow trial).
-        // Without the session state, array_key_first(null) would fatal in PHP 8.
-        if (!isset($SESSION->registrationrule_hiddenfield_field)) {
-            return $this->allow();
-        }
-
         // If the honeypot field is submitted with data then deny registration.
         if ($data['rr_' . array_key_first($SESSION->registrationrule_hiddenfield_field)] != '') {
             return $this->deny(
