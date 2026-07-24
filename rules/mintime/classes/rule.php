@@ -112,6 +112,14 @@ class rule implements rule_interface, post_data_check, instance_configurable, ex
     public function post_data_check(array $data): rule_check_result {
         global $SESSION;
 
+        // Rule is inapplicable when its encrypted timestamp was never rendered
+        // (e.g. a signup flow that does not use the native form). Without the
+        // session state / submitted field, the openssl_decrypt below would error.
+        if (!isset($SESSION->registrationrule_mintime_encdata)
+                || !isset($data['registrationrule_mintime_time'])) {
+            return $this->allow();
+        }
+
         // Get the timestamp at the earliest point we can.
         $currenttime = time();
 

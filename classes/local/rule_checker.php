@@ -149,7 +149,12 @@ class rule_checker {
     public function run_pre_data_checks(): void {
         foreach ($this->rules as $instance) {
             if ($instance instanceof pre_data_check) {
-                $this->results[] = $instance->pre_data_check();
+                try {
+                    $this->results[] = $instance->pre_data_check();
+                } catch (\Throwable $e) {
+                    debugging('registrationrules: pre_data_check failed for '
+                        . get_class($instance) . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
+                }
             }
         }
         $this->checked = true;
@@ -164,7 +169,12 @@ class rule_checker {
     public function run_post_data_checks(array $data): void {
         foreach ($this->rules as $instance) {
             if ($instance instanceof post_data_check) {
-                $this->results[] = $instance->post_data_check($data);
+                try {
+                    $this->results[] = $instance->post_data_check($data);
+                } catch (\Throwable $e) {
+                    debugging('registrationrules: post_data_check failed for '
+                        . get_class($instance) . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
+                }
             }
         }
 
